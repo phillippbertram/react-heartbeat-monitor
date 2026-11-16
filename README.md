@@ -6,7 +6,7 @@ Turn off **Readout** and **Grid** in the demo to show just the trace. You can al
 
 **[Try the interactive demo](https://phillippbertram.github.io/react-heartbeat-monitor/)**
 
-![The demo with a green ECG trace, controls, and a live JSX example](docs/media/demo.png)
+![The demo with its GitHub link, a green ECG trace, controls, and a live JSX example](docs/media/demo.png)
 
 ## Use it in your app
 
@@ -27,7 +27,7 @@ See the [component guide](src/HeartbeatMonitor/README.md) for props, CSS variabl
 <details>
 <summary>See the status examples</summary>
 
-![Three monitors show a normal rate, a high rate, and a flatline](docs/media/status-examples.png)
+![The demo's three status examples, minimal monitor, and centered copyright footer](docs/media/status-examples.png)
 
 ![Changing the BPM switches the trace through normal, high, and flatline states](docs/media/status-changes.gif)
 
