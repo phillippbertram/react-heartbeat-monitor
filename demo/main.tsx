@@ -180,5 +180,18 @@ function Demo() {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Demo />
+    <footer className="mx-auto max-w-[1080px] px-6 pb-8 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-(--demo-border) pt-5">
+        <span className="text-(--demo-muted)">
+          © 2026 Phillipp Bertram · Made with <span className="text-[#2bff88]" role="img" aria-label="love">♥</span>
+        </span>
+        <a
+          className="text-(--demo-text) underline underline-offset-4 hover:text-[#2bff88]"
+          href="https://github.com/phillippbertram/react-heartbeat-monitor"
+        >
+          View on GitHub
+        </a>
+      </div>
+    </footer>
   </StrictMode>,
 );
