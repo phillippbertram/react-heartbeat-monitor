@@ -1,0 +1,306 @@
+/* ==========================================================================
+   HeartbeatMonitor
+   Every visual token is a CSS custom property. Override them on .hb, on a
+   parent, or on your own className to restyle without touching the JS.
+   ========================================================================== */
+
+.hb {
+  /* Colours */
+  --hb-accent: #2bff88; /* trace + readout in the normal range */
+  --hb-warn: #ffb020; /* bpm outside thresholds */
+  --hb-alarm: #ff3b5c; /* flatline */
+  --hb-bg: #050b0e;
+  --hb-text: #d9fbe9;
+
+  /* Geometry */
+  --hb-height: 160px; /* should be a length, the value size derives from it */
+  --hb-radius: 14px;
+  --hb-readout-width: clamp(112px, 26%, 168px);
+  --hb-grid-size: 14px; /* minor cell, major cell = 5x */
+  --hb-value-size: clamp(26px, calc(var(--hb-height) * 0.34), 72px);
+
+  /* Effects */
+  --hb-glow: 8px;
+  --hb-scanlines: 0.035; /* opacity, 0 disables */
+  --hb-beat-duration: 420ms;
+  --hb-font: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Derived from the active colour, normally no need to touch */
+  --hb-color: var(--hb-accent);
+  --hb-color-soft: color-mix(in srgb, var(--hb-color) 22%, transparent);
+  --hb-color-faint: color-mix(in srgb, var(--hb-color) 7%, transparent);
+  --hb-grid-minor: color-mix(in srgb, var(--hb-color) 6%, transparent);
+  --hb-grid-major: color-mix(in srgb, var(--hb-color) 13%, transparent);
+
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  height: var(--hb-height);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--hb-color-soft);
+  border-radius: var(--hb-radius);
+  background: var(--hb-bg);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 12px 40px -16px var(--hb-color-soft),
+    inset 0 1px 0 rgb(255 255 255 / 0.04);
+  color: var(--hb-text);
+  font-family: var(--hb-font);
+  transition:
+    border-color 400ms ease,
+    box-shadow 400ms ease;
+}
+
+.hb *,
+.hb *::before,
+.hb *::after {
+  box-sizing: border-box;
+}
+
+.hb[data-status='low'],
+.hb[data-status='high'] {
+  --hb-color: var(--hb-warn);
+}
+
+.hb[data-status='flatline'] {
+  --hb-color: var(--hb-alarm);
+}
+
+/* ---------- Screen ------------------------------------------------------- */
+
+.hb__screen {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: radial-gradient(120% 90% at 50% 55%, var(--hb-color-faint), transparent 70%);
+}
+
+.hb__grid,
+.hb__flash,
+.hb__trace,
+.hb__scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hb__grid {
+  background-image:
+    linear-gradient(to right, var(--hb-grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hb-grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--hb-grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hb-grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--hb-grid-size) * 5) calc(var(--hb-grid-size) * 5),
+    calc(var(--hb-grid-size) * 5) calc(var(--hb-grid-size) * 5),
+    var(--hb-grid-size) var(--hb-grid-size),
+    var(--hb-grid-size) var(--hb-grid-size);
+  background-position: -1px -1px;
+  mask-image: radial-gradient(130% 110% at 50% 50%, #000 45%, transparent 100%);
+}
+
+/* Soft light burst at the sweep head on every R peak */
+.hb__flash {
+  opacity: 0;
+  background: radial-gradient(
+    180px 120% at var(--hb-beat-x, 50%) 30%,
+    var(--hb-color-soft),
+    transparent 70%
+  );
+}
+
+.hb__trace {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 1px var(--hb-color)) drop-shadow(0 0 var(--hb-glow) var(--hb-color));
+}
+
+/* CRT scanlines + vignette */
+.hb__scanlines {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgb(255 255 255 / var(--hb-scanlines)) 0 1px,
+      transparent 1px 3px
+    ),
+    radial-gradient(120% 140% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.55));
+}
+
+/* ---------- Readout ------------------------------------------------------ */
+
+.hb__readout {
+  /* Container, so the value can scale with the readout width (cqi units below) */
+  container-type: inline-size;
+  display: flex;
+  flex: 0 0 var(--hb-readout-width);
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 12px;
+  border-left: 1px solid var(--hb-color-soft);
+  background: linear-gradient(180deg, var(--hb-color-faint), transparent 70%);
+}
+
+.hb__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hb__label {
+  color: var(--hb-color);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+
+.hb__heart {
+  width: 16px;
+  height: 16px;
+  color: var(--hb-color);
+  filter: drop-shadow(0 0 4px var(--hb-color));
+}
+
+.hb__value {
+  align-self: flex-end;
+  color: var(--hb-color);
+  /* Never wider than the readout, even for 3-digit values */
+  font-size: min(var(--hb-value-size), 40cqi);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-shadow: 0 0 var(--hb-glow) var(--hb-color-soft);
+}
+
+.hb__unit {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  opacity: 0.55;
+}
+
+.hb__status {
+  overflow: hidden;
+  padding: 2px 7px;
+  border: 1px solid var(--hb-color-soft);
+  border-radius: 999px;
+  background: var(--hb-color-faint);
+  color: var(--hb-color);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Narrow readout: the status chip is more useful than the unit */
+@container (max-width: 120px) {
+  .hb__unit {
+    display: none;
+  }
+
+  .hb__row:last-child {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- Beat animations (triggered via [data-beat] from JS) ---------- */
+
+.hb[data-beat] .hb__flash {
+  animation: hb-flash var(--hb-beat-duration) ease-out;
+}
+
+.hb[data-beat] .hb__heart {
+  animation: hb-heart var(--hb-beat-duration) ease-out;
+}
+
+.hb[data-beat] .hb__value {
+  animation: hb-value var(--hb-beat-duration) ease-out;
+}
+
+/* ---------- Alarm states ------------------------------------------------- */
+
+.hb[data-status='low'] .hb__status,
+.hb[data-status='high'] .hb__status {
+  animation: hb-blink 1s steps(1) infinite;
+}
+
+.hb[data-status='flatline'] {
+  animation: hb-alarm 1s ease-in-out infinite;
+}
+
+.hb[data-status='flatline'] .hb__value,
+.hb[data-status='flatline'] .hb__status {
+  animation: hb-blink 0.5s steps(1) infinite;
+}
+
+/* ---------- Keyframes ---------------------------------------------------- */
+
+@keyframes hb-flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* "lub-dub" double pulse */
+@keyframes hb-heart {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.38);
+  }
+  28% {
+    transform: scale(0.94);
+  }
+  42% {
+    transform: scale(1.18);
+  }
+  70%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes hb-value {
+  0% {
+    filter: brightness(1.5);
+    text-shadow: 0 0 calc(var(--hb-glow) * 3) var(--hb-color);
+  }
+  100% {
+    filter: brightness(1);
+    text-shadow: 0 0 var(--hb-glow) var(--hb-color-soft);
+  }
+}
+
+@keyframes hb-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes hb-alarm {
+  0%,
+  100% {
+    border-color: var(--hb-color-soft);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5);
+  }
+  50% {
+    border-color: var(--hb-color);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.5),
+      0 0 32px -6px var(--hb-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb,
+  .hb * {
+    animation: none !important;
+  }
+}
