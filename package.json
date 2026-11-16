@@ -4,7 +4,8 @@
   "private": true,
   "description": "An animated ECG-style heartbeat monitor for React.",
   "scripts": {
-    "build": "node build-demo.mjs",
+    "dev": "vite",
+    "build": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -21,16 +22,18 @@
     "url": "git+https://github.com/phillippbertram/react-heartbeat-monitor.git"
   },
   "dependencies": {
+    "@primer/octicons-react": "^19.42.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.5",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "esbuild": "^0.28.2",
-    "postcss": "^8.5.33",
+    "@vitejs/plugin-react": "^6.3.0",
     "tailwindcss": "^4.3.5",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-singlefile": "^2.3.4"
   }
 }

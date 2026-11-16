@@ -35,14 +35,16 @@ See the [component guide](src/HeartbeatMonitor/README.md) for props, CSS variabl
 
 ## Run the demo locally
 
-With Node.js 24, run the commands below and open `dist/index.html` in your browser.
+With Node.js 24, install the dependencies and start the development server.
 
 ```sh
 npm ci
-npm run build
+npm run dev
 ```
 
-Run `npm run typecheck` to check the TypeScript code. The demo uses Tailwind CSS, and the component comes with its own stylesheet.
+Open the local URL printed in the terminal. React and CSS changes appear as you edit. Press `Ctrl+C` to stop the server.
+
+Run `npm run build` to create a standalone `dist/index.html` you can open directly in your browser. Run `npm run typecheck` to check the TypeScript code. The demo uses Tailwind CSS, and the component comes with its own stylesheet.
 
 ## License
 
