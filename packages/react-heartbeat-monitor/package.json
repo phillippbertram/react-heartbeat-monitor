@@ -1,6 +1,6 @@
 {
   "name": "react-heartbeat-monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An animated ECG-style heartbeat monitor for React.",
   "keywords": [
     "react",
