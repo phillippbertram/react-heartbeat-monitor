@@ -32,19 +32,28 @@
   --hb-grid-minor: color-mix(in srgb, var(--hb-color) 6%, transparent);
   --hb-grid-major: color-mix(in srgb, var(--hb-color) 13%, transparent);
 
+  --hb-frame-border: var(--hb-color-soft);
+  --hb-alarm-border: var(--hb-color);
+  --hb-outline: rgb(0 0 0 / 0.5);
+  --hb-frame-highlight: rgb(255 255 255 / 0.04);
+  --hb-surface-glow: var(--hb-color-faint);
+  --hb-frame-shadow:
+    0 0 0 1px var(--hb-outline),
+    0 12px 40px -16px var(--hb-color-soft),
+    inset 0 1px 0 var(--hb-frame-highlight);
+  --hb-alarm-shadow: 0 0 0 1px var(--hb-outline);
+  --hb-alarm-shadow-peak: var(--hb-alarm-shadow), 0 0 32px -6px var(--hb-color);
+
   box-sizing: border-box;
   position: relative;
   display: flex;
   height: var(--hb-height);
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid var(--hb-color-soft);
+  border: 1px solid var(--hb-frame-border);
   border-radius: var(--hb-radius);
   background: var(--hb-bg);
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.5),
-    0 12px 40px -16px var(--hb-color-soft),
-    inset 0 1px 0 rgb(255 255 255 / 0.04);
+  box-shadow: var(--hb-frame-shadow);
   color: var(--hb-text);
   font-family: var(--hb-font);
   transition:
@@ -67,13 +76,27 @@
   --hb-color: var(--hb-alarm);
 }
 
+.hb[data-border='off'] {
+  --hb-frame-border: transparent;
+  --hb-alarm-border: transparent;
+  --hb-outline: transparent;
+  --hb-frame-highlight: transparent;
+}
+
+.hb[data-background-glow='off'] {
+  --hb-surface-glow: transparent;
+  --hb-frame-shadow: none;
+  --hb-alarm-shadow: none;
+  --hb-alarm-shadow-peak: none;
+}
+
 /* ---------- Screen ------------------------------------------------------- */
 
 .hb__screen {
   position: relative;
   flex: 1;
   min-width: 0;
-  background: radial-gradient(120% 90% at 50% 55%, var(--hb-color-faint), transparent 70%);
+  background: radial-gradient(120% 90% at 50% 55%, var(--hb-surface-glow), transparent 70%);
 }
 
 .hb__grid,
@@ -138,8 +161,8 @@
   justify-content: space-between;
   min-width: 0;
   padding: 12px;
-  border-left: 1px solid var(--hb-color-soft);
-  background: linear-gradient(180deg, var(--hb-color-faint), transparent 70%);
+  border-left: 1px solid var(--hb-frame-border);
+  background: linear-gradient(180deg, var(--hb-surface-glow), transparent 70%);
 }
 
 .hb__row {
@@ -150,14 +173,19 @@
 }
 
 .hb__label {
+  min-width: 0;
+  overflow: hidden;
   color: var(--hb-color);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
   opacity: 0.85;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hb__heart {
+  flex: none;
   width: 16px;
   height: 16px;
   color: var(--hb-color);
@@ -212,11 +240,11 @@
   animation: hb-flash var(--hb-beat-duration) ease-out;
 }
 
-.hb[data-beat] .hb__heart {
+.hb[data-beat]:not([data-beat-pulse='off']) .hb__heart {
   animation: hb-heart var(--hb-beat-duration) ease-out;
 }
 
-.hb[data-beat] .hb__value {
+.hb[data-beat]:not([data-beat-pulse='off']) .hb__value {
   animation: hb-value var(--hb-beat-duration) ease-out;
 }
 
@@ -287,14 +315,12 @@
 @keyframes hb-alarm {
   0%,
   100% {
-    border-color: var(--hb-color-soft);
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5);
+    border-color: var(--hb-frame-border);
+    box-shadow: var(--hb-alarm-shadow);
   }
   50% {
-    border-color: var(--hb-color);
-    box-shadow:
-      0 0 0 1px rgb(0 0 0 / 0.5),
-      0 0 32px -6px var(--hb-color);
+    border-color: var(--hb-alarm-border);
+    box-shadow: var(--hb-alarm-shadow-peak);
   }
 }
 

@@ -2,7 +2,9 @@
 
 A React component that draws a simulated heartbeat on a canvas. Set the heart rate in BPM, change the colors, or pause the trace.
 
-Turn off **Readout** and **Grid** in the demo to show just the trace. You can also change the label in the readout.
+Turn off **Readout** and **Grid** to show just the trace. Under **Flatline color**, keep the default red with `alarmColor` unset, match the normal color, or pick a custom color. Click a status example to load its settings into the interactive monitor.
+
+Use **Appearance** to change the height, line width, border, background glow, beat pulse, scanlines, and background transparency. Under **Status examples**, **Load minimal preset** fills in those settings and updates the JSX example.
 
 **[Try the interactive demo](https://phillippbertram.github.io/react-heartbeat-monitor/)**
 
@@ -35,16 +37,16 @@ See the [component guide](src/HeartbeatMonitor/README.md) for props, CSS variabl
 
 ## Run the demo locally
 
-With Node.js 24, install the dependencies and start the development server.
+With Node.js 24 and pnpm, install the dependencies and start the development server.
 
 ```sh
-npm ci
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open the local URL printed in the terminal. React and CSS changes appear as you edit. Press `Ctrl+C` to stop the server.
 
-Run `npm run build` to create a standalone `dist/index.html` you can open directly in your browser. Run `npm run typecheck` to check the TypeScript code. The demo uses Tailwind CSS, and the component comes with its own stylesheet.
+Run `pnpm build` to create a standalone `dist/index.html` you can open directly in your browser. Run `pnpm typecheck` to check the TypeScript code. The demo uses Tailwind CSS, and the component comes with its own stylesheet.
 
 ## License
 

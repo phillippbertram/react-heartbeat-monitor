@@ -2,6 +2,7 @@
   "name": "react-heartbeat-monitor",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.15.1",
   "description": "An animated ECG-style heartbeat monitor for React.",
   "scripts": {
     "dev": "vite",
