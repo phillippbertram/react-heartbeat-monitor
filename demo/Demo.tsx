@@ -99,10 +99,10 @@ function MonitorExample({ title, settings, height = settings.height, onLoad }: {
   onLoad: (settings: DemoSettings) => void;
 }) {
   return (
-    <figure className="status-example">
+    <figure className="relative m-0">
       <HeartbeatMonitor {...getMonitorProps(settings)} height={height} />
-      <figcaption>
-        <button className="status-example__button" type="button" onClick={() => onLoad(settings)}>
+      <figcaption className="mt-2 font-mono text-xs/normal text-demo-muted">
+        <button className="demo-example-action" type="button" onClick={() => onLoad(settings)}>
           {title}
         </button>
       </figcaption>
@@ -124,12 +124,12 @@ function Slider({ label, value, min, max, step = 1, format = String, onChange }:
   const id = useId();
 
   return (
-    <div className="control">
-      <div className="control__head">
+    <div className="demo-control">
+      <div className="demo-control-heading">
         <label htmlFor={id}>{label}</label>
-        <output htmlFor={id}>{format(value)}</output>
+        <output className="font-mono text-demo-text tabular-nums" htmlFor={id}>{format(value)}</output>
       </div>
-      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} />
+      <input className="w-full accent-demo-accent" id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} />
     </div>
   );
 }
@@ -175,14 +175,14 @@ export function Demo() {
 
   return (
     <>
-      <main className="demo">
-        <header className="demo__header flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      <main className="mx-auto flex max-w-demo flex-col gap-5 px-6 py-10">
+        <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
           <div>
-            <h1>React Heartbeat Monitor</h1>
-            <p>Try a simulated heart rate and see how each setting changes the trace.</p>
+            <h1 className="m-0 mb-1 text-[26px] tracking-[-0.02em]">React Heartbeat Monitor</h1>
+            <p className="m-0 text-sm/normal text-demo-muted">Try a simulated heart rate and see how each setting changes the trace.</p>
           </div>
           <a
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-(--demo-border) px-3 py-1.5 text-sm text-(--demo-text) no-underline hover:border-[#2bff88] hover:text-[#2bff88] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2bff88]"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-demo-border px-3 py-1.5 text-sm text-demo-text no-underline hover:border-demo-accent hover:text-demo-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-demo-accent"
             href="https://github.com/phillippbertram/react-heartbeat-monitor"
           >
             <MarkGithubIcon size={16} aria-hidden="true" />
@@ -192,8 +192,8 @@ export function Demo() {
 
         <HeartbeatMonitor {...monitorProps} />
 
-        <section className="panel">
-          <div className="controls">
+        <section className="grid grid-cols-1 gap-5 rounded-[14px] border border-demo-border bg-demo-surface p-5 min-[821px]:grid-cols-2">
+          <div className="flex min-w-0 flex-col gap-3.5">
             <Slider label="BPM" value={bpm} min={0} max={200} onChange={(value) => updateSetting('bpm', value)} />
             <Slider label="Sweep speed" value={sweepSpeed} min={60} max={320} step={10} format={(v) => `${v} px/s`} onChange={(value) => updateSetting('sweepSpeed', value)} />
             <Slider label="Trace glow" value={glow} min={0} max={24} format={(v) => `${v} px`} onChange={(value) => updateSetting('glow', value)} />
@@ -201,14 +201,14 @@ export function Demo() {
             <Slider label="Variability" value={variability} min={0} max={0.2} step={0.01} format={(v) => `±${Math.round(v * 100)}%`} onChange={(value) => updateSetting('variability', value)} />
 
             <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
-              <div className="control">
-                <span className="control__head">Normal color</span>
-                <div className="swatches">
+              <div className="demo-control">
+                <span className="demo-control-heading">Normal color</span>
+                <div className="flex flex-wrap gap-2">
                   {COLOR_PRESETS.map(({ name, value }) => (
                     <button
                       key={value}
                       type="button"
-                      className="swatch"
+                      className="size-[26px] cursor-pointer rounded-full border-2 border-transparent bg-(--swatch) shadow-[0_0_12px_-2px_var(--swatch)] aria-pressed:border-white"
                       aria-label={name}
                       aria-pressed={value === color}
                       style={{ '--swatch': value } as CSSProperties}
@@ -217,10 +217,10 @@ export function Demo() {
                   ))}
                 </div>
               </div>
-              <label className="control min-w-0">
-                <span className="control__head">Readout label</span>
+              <label className="demo-control min-w-0">
+                <span className="demo-control-heading">Readout label</span>
                 <input
-                  className="control-input w-full"
+                  className="demo-field w-full"
                   type="text"
                   value={readoutLabel}
                   maxLength={8}
@@ -230,11 +230,11 @@ export function Demo() {
               </label>
             </div>
 
-            <div className="control">
-              <label className="control__head" htmlFor={flatlineColorId}>Flatline color</label>
+            <div className="demo-control">
+              <label className="demo-control-heading" htmlFor={flatlineColorId}>Flatline color</label>
               <div className="flex items-center gap-2">
                 <select
-                  className="control-input min-w-0"
+                  className="demo-field min-w-0"
                   id={flatlineColorId}
                   value={flatlineColorMode}
                   onChange={(event) => updateSetting('flatlineColorMode', event.target.value as FlatlineColorMode)}
@@ -245,7 +245,7 @@ export function Demo() {
                 </select>
                 {flatlineColorMode === 'custom' && (
                   <input
-                    className="control-input w-10 shrink-0 cursor-pointer"
+                    className="demo-field w-10 shrink-0 cursor-pointer"
                     type="color"
                     aria-label="Custom flatline color"
                     value={customAlarmColor}
@@ -255,17 +255,17 @@ export function Demo() {
               </div>
             </div>
 
-            <details className="rounded-lg border border-(--demo-border) p-3 text-[13px]">
+            <details className="rounded-lg border border-demo-border p-3 text-[13px]">
               <summary className="cursor-pointer font-medium">Appearance</summary>
               <div className="flex flex-col gap-3 pt-3">
                 <Slider label="Height" value={height} min={70} max={240} step={10} format={(v) => `${v} px`} onChange={(value) => updateSetting('height', value)} />
                 <Slider label="Line width" value={lineWidth} min={1} max={5} step={0.25} format={(v) => `${v} px`} onChange={(value) => updateSetting('lineWidth', value)} />
-                <div className="toggles">
+                <div className="flex flex-wrap gap-2">
                   {APPEARANCE_TOGGLES.map(([setting, text]) => (
                     <button
                       key={setting}
                       type="button"
-                      className="chip"
+                      className="demo-chip"
                       aria-pressed={settings[setting]}
                       onClick={() => updateSetting(setting, !settings[setting])}
                     >
@@ -276,33 +276,33 @@ export function Demo() {
               </div>
             </details>
 
-            <div className="toggles">
-              <button type="button" className="chip" aria-pressed={showGrid} onClick={() => updateSetting('showGrid', !showGrid)}>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" className="demo-chip" aria-pressed={showGrid} onClick={() => updateSetting('showGrid', !showGrid)}>
                 Grid
               </button>
-              <button type="button" className="chip" aria-pressed={showReadout} onClick={() => updateSetting('showReadout', !showReadout)}>
+              <button type="button" className="demo-chip" aria-pressed={showReadout} onClick={() => updateSetting('showReadout', !showReadout)}>
                 Readout
               </button>
-              <button type="button" className="chip" onClick={() => updateSetting('paused', !paused)}>
+              <button type="button" className="demo-chip" onClick={() => updateSetting('paused', !paused)}>
                 {paused ? 'Resume' : 'Pause'}
               </button>
-              <button type="button" className="chip chip--danger" onClick={() => updateSetting('bpm', 0)}>
+              <button type="button" className="demo-chip border-demo-alarm/50 text-demo-danger-text" onClick={() => updateSetting('bpm', 0)}>
                 Flatline
               </button>
-              <button type="button" className="chip" onClick={() => updateSetting('bpm', DEFAULT_SETTINGS.bpm)}>
+              <button type="button" className="demo-chip" onClick={() => updateSetting('bpm', DEFAULT_SETTINGS.bpm)}>
                 Reset BPM
               </button>
             </div>
-            <p role="status" className="m-0 text-[13px] text-(--demo-muted) empty:hidden">{controlHint}</p>
+            <p role="status" className="m-0 text-[13px] text-demo-muted empty:hidden">{controlHint}</p>
           </div>
 
-          <pre className="snippet">
+          <pre className="m-0 min-w-0 overflow-auto rounded-[10px] border border-demo-border bg-demo-code-bg p-4 font-mono text-[12.5px]/[1.55] text-demo-code-text">
             <code>{snippet}</code>
           </pre>
         </section>
 
-        <h2 id="status-examples-heading">Status examples</h2>
-        <section className="status-examples" aria-labelledby="status-examples-heading">
+        <h2 id="status-examples-heading" className="m-0 mt-4 text-[13px] font-semibold tracking-[0.08em] text-demo-muted uppercase">Status examples</h2>
+        <section className="grid grid-cols-1 gap-4 min-[821px]:grid-cols-3" aria-labelledby="status-examples-heading">
           {STATUS_EXAMPLES.map((example) => (
             <MonitorExample key={example.title} {...example} height={130} onLoad={setSettings} />
           ))}
@@ -312,16 +312,16 @@ export function Demo() {
         </section>
       </main>
 
-      <footer className="mx-auto max-w-[1080px] px-6 pb-8 text-center text-sm">
-        <p className="m-0 border-t border-(--demo-border) pt-5 text-(--demo-muted)">
+      <footer className="mx-auto max-w-demo px-6 pb-8 text-center text-sm">
+        <p className="m-0 border-t border-demo-border pt-5 text-demo-muted">
           © 2026{' '}
           <a
-            className="text-(--demo-text) underline underline-offset-4 hover:text-[#2bff88]"
+            className="text-demo-text underline underline-offset-4 hover:text-demo-accent"
             href="https://www.phillippbertram.de/"
           >
             Phillipp Bertram
           </a>
-          {' '}· Made with <span className="text-[#2bff88]" role="img" aria-label="love">♥</span>
+          {' '}· Made with <span className="text-demo-accent" role="img" aria-label="love">♥</span>
         </p>
       </footer>
     </>

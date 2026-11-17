@@ -12,7 +12,7 @@ Use **Appearance** to change the height, line width, border, background glow, be
 
 ## Use it in your app
 
-Copy [`src/HeartbeatMonitor`](src/HeartbeatMonitor) into a React 18+ project that supports TypeScript and CSS imports. Keep a copy of the [MIT license](LICENSE) with the files.
+Copy [`src/HeartbeatMonitor`](src/HeartbeatMonitor) into a React 18+ project that supports TypeScript and CSS imports.
 
 ```tsx
 import { HeartbeatMonitor } from './HeartbeatMonitor';
