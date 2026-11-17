@@ -1,3 +1,4 @@
+import 'react-heartbeat-monitor/styles.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Demo } from './Demo';

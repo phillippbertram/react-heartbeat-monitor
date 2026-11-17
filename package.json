@@ -1,40 +1,15 @@
 {
-  "name": "react-heartbeat-monitor",
-  "version": "1.0.0",
+  "name": "react-heartbeat-monitor-workspace",
   "private": true,
   "packageManager": "pnpm@11.15.1",
-  "description": "An animated ECG-style heartbeat monitor for React.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "typecheck": "tsc --noEmit"
-  },
-  "keywords": [
-    "react",
-    "heartbeat",
-    "ecg",
-    "canvas"
-  ],
-  "author": "Phillipp Bertram",
-  "license": "MIT",
-  "homepage": "https://phillippbertram.github.io/react-heartbeat-monitor/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/phillippbertram/react-heartbeat-monitor.git"
-  },
-  "dependencies": {
-    "@primer/octicons-react": "^19.42.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "dev": "pnpm --filter heartbeat-demo dev",
+    "build": "pnpm -r build",
+    "build:lib": "pnpm --filter react-heartbeat-monitor build",
+    "typecheck": "pnpm --filter react-heartbeat-monitor build:types && pnpm -r typecheck",
+    "test:release": "node --test scripts/release.test.mjs"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.3.0",
-    "tailwindcss": "^4.3.5",
-    "typescript": "^7.0.2",
-    "vite": "^8.3.8",
-    "vite-plugin-singlefile": "^2.3.4"
+    "semver": "^7.7.3"
   }
 }

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { DEFAULT_WAVEFORM, type EcgWave } from './ecgWaveform';
 import { startHeartbeatTrace, type TraceConfig } from './trace';
-import './HeartbeatMonitor.css';
 
 export type HeartbeatStatus = 'normal' | 'low' | 'high' | 'flatline';
 

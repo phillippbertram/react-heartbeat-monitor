@@ -1,0 +1,56 @@
+{
+  "name": "react-heartbeat-monitor",
+  "version": "1.0.0",
+  "description": "An animated ECG-style heartbeat monitor for React.",
+  "keywords": [
+    "react",
+    "heartbeat",
+    "ecg",
+    "canvas"
+  ],
+  "author": "Phillipp Bertram",
+  "license": "MIT",
+  "homepage": "https://phillippbertram.github.io/react-heartbeat-monitor/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phillippbertram/react-heartbeat-monitor.git",
+    "directory": "packages/react-heartbeat-monitor"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": {
+      "types": "./dist/styles.css.d.ts",
+      "default": "./dist/styles.css"
+    }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build && pnpm build:types",
+    "build:types": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "prepack": "pnpm build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "react": "^19.3.1"
+  }
+}

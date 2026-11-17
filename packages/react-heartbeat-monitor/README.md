@@ -4,10 +4,11 @@
 
 ## Use the component
 
-Copy this folder into your React 18+ project. The component imports its own stylesheet, so use a build setup that supports CSS imports.
+Install with `npm install react-heartbeat-monitor` in a React 18 or 19 project. Import the stylesheet once in your application entry point.
 
 ```tsx
-import { HeartbeatMonitor } from './HeartbeatMonitor';
+import { HeartbeatMonitor } from 'react-heartbeat-monitor';
+import 'react-heartbeat-monitor/styles.css';
 
 export function PulsePreview() {
   return <HeartbeatMonitor bpm={72} color="#22d3ee" height={120} />;
@@ -69,7 +70,7 @@ The canvas reads its trace color from `--hb-color`. The root exposes `data-statu
 The default waveform combines P, Q, R, S, and T waves. You can reuse their definitions and adjust individual waves, such as the T wave in this example.
 
 ```tsx
-import { DEFAULT_WAVEFORM, HeartbeatMonitor } from './HeartbeatMonitor';
+import { DEFAULT_WAVEFORM, HeartbeatMonitor } from 'react-heartbeat-monitor';
 
 const peakedT = DEFAULT_WAVEFORM.map((wave, index) =>
   index === 4 ? { ...wave, amplitude: 0.6, width: 0.03 } : wave,
@@ -79,3 +80,7 @@ export function CustomPulse() {
   return <HeartbeatMonitor waveform={peakedT} />;
 }
 ```
+
+## Links
+
+[Interactive demo](https://phillippbertram.github.io/react-heartbeat-monitor/) · [Source and release instructions](https://github.com/phillippbertram/react-heartbeat-monitor) · [MIT license](https://github.com/phillippbertram/react-heartbeat-monitor/blob/main/LICENSE)

@@ -1,0 +1,127 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+      channel: ${{ steps.version.outputs.channel }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: pnpm/action-setup@v6
+      - run: pnpm install --frozen-lockfile
+      - id: version
+        run: node scripts/release.mjs
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - run: pnpm test:release
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: mkdir -p artifacts && pnpm --filter react-heartbeat-monitor pack --out artifacts/package.tgz
+      - uses: actions/upload-artifact@v7
+        with:
+          name: npm-package
+          path: artifacts/package.tgz
+          if-no-files-found: error
+
+  test-package:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        react: [18, 19]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: artifacts
+      - run: node scripts/test-package.mjs artifacts/package.tgz
+        env:
+          REACT_VERSION: ${{ matrix.react }}
+
+  publish:
+    needs: [build, test-package]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: pnpm/action-setup@v6
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: artifacts
+      - id: registry
+        run: node scripts/release.mjs check-registry artifacts/package.tgz
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Publish archive
+        if: steps.registry.outputs.publish == 'true'
+        env:
+          AUTH_MODE: ${{ vars.NPM_PUBLISH_AUTH || 'oidc' }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+          CHANNEL: ${{ needs.build.outputs.channel }}
+        shell: bash
+        run: |
+          case "$AUTH_MODE" in
+            bootstrap)
+              test -n "$NODE_AUTH_TOKEN" || { echo 'NPM_BOOTSTRAP_TOKEN is required'; exit 1; }
+              export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npm-publish.npmrc"
+              trap 'rm -f "$NPM_CONFIG_USERCONFIG"' EXIT
+              printf '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\n' > "$NPM_CONFIG_USERCONFIG"
+              ;;
+            oidc) unset NODE_AUTH_TOKEN ;;
+            *) echo "Unknown NPM_PUBLISH_AUTH mode"; exit 1 ;;
+          esac
+          npm publish ./artifacts/package.tgz --access public --provenance --tag "$CHANNEL" --registry=https://registry.npmjs.org
+
+  github-release:
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          PRERELEASE: ${{ needs.build.outputs.prerelease }}
+        shell: bash
+        run: |
+          # Listing fails on authentication/network errors instead of treating them as a missing release.
+          releases=$(gh api --paginate "repos/$GH_REPO/releases" --jq '.[].tag_name')
+          if grep -Fxq -- "$RELEASE_TAG" <<< "$releases"; then
+            echo "Release already exists."
+            exit 0
+          fi
+          flags=()
+          if [ "$PRERELEASE" = true ]; then flags+=(--prerelease); fi
+          gh release create "$RELEASE_TAG" --verify-tag --generate-notes "${flags[@]}"

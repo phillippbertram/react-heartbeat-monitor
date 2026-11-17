@@ -7,6 +7,12 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      semver:
+        specifier: ^7.7.3
+        version: 7.8.6
+
+  apps/demo:
     dependencies:
       '@primer/octicons-react':
         specifier: ^19.42.0
@@ -17,6 +23,9 @@ importers:
       react-dom:
         specifier: ^19.3.1
         version: 19.3.1(react@19.3.1)
+      react-heartbeat-monitor:
+        specifier: workspace:*
+        version: link:../../packages/react-heartbeat-monitor
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.3.5
@@ -42,6 +51,21 @@ importers:
       vite-plugin-singlefile:
         specifier: ^2.3.4
         version: 2.3.4(vite@8.3.8(esbuild@0.28.2)(jiti@2.7.0))
+
+  packages/react-heartbeat-monitor:
+    devDependencies:
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      react:
+        specifier: ^19.3.1
+        version: 19.3.1
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(esbuild@0.28.2)(jiti@2.7.0)
 
 packages:
 
@@ -732,6 +756,11 @@ packages:
   scheduler@0.28.0:
     resolution: {integrity: sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==}
 
+  semver@7.8.6:
+    resolution: {integrity: sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   source-map-js@1.2.2:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
@@ -1281,6 +1310,8 @@ snapshots:
       '@rolldown/binding-win32-x64-msvc': 1.2.19
 
   scheduler@0.28.0: {}
+
+  semver@7.8.6: {}
 
   source-map-js@1.2.2: {}
 

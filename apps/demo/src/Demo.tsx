@@ -1,6 +1,6 @@
 import { MarkGithubIcon } from '@primer/octicons-react';
 import { useId, useState, type CSSProperties } from 'react';
-import { HeartbeatMonitor } from '../src/HeartbeatMonitor';
+import { HeartbeatMonitor } from 'react-heartbeat-monitor';
 import './demo.css';
 
 const COLOR_PRESETS = [
